@@ -168,152 +168,155 @@ const MainPage = () => {
       </header>
 
       {/* Main Content */}
-      <div className="container main-content">
+      <div className="main-content-wrapper">
         {/* Filters Panel */}
         <aside className="filters-panel">
-          <h3>Filtrar resultados</h3>
-          
-          <div className="filter-section">
-            <h4>Rubro</h4>
-            <select 
-              value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="filter-select"
+          <div className="filters-content">
+            <h3>Filtrar resultados</h3>
+            
+            <div className="filter-section">
+              <h4>Rubro</h4>
+              <select 
+                value={filters.category}
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+                className="filter-select"
+              >
+                <option value="">Todos los rubros</option>
+                {professionalCategories.map((category, index) => (
+                  <option key={index} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="filter-section">
+              <h4>Ubicación</h4>
+              <input 
+                type="text" 
+                placeholder="Barrio o ciudad" 
+                value={filters.location}
+                onChange={(e) => handleFilterChange('location', e.target.value)}
+                className="filter-input"
+              />
+            </div>
+            
+            <div className="filter-section">
+              <h4>Calificación mínima</h4>
+              <div className="rating-filter">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <span 
+                    key={star}
+                    className={`star ${star <= filters.rating ? 'active' : ''}`}
+                    onClick={() => handleFilterChange('rating', star)}
+                  >
+                    ★
+                  </span>
+                ))}
+                {filters.rating > 0 && (
+                  <button 
+                    className="clear-rating"
+                    onClick={() => handleFilterChange('rating', 0)}
+                  >
+                    Limpiar
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <div className="filter-section">
+              <h4>Días disponibles</h4>
+              <div className="availability-filter">
+                {daysOfWeek.map(day => (
+                  <button
+                    key={day}
+                    className={`day-btn ${filters.availability.includes(day) ? 'active' : ''}`}
+                    onClick={() => toggleAvailabilityDay(day)}
+                  >
+                    {day.substring(0, 3)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <button 
+              className="reset-filters"
+              onClick={() => setFilters({
+                category: '',
+                location: '',
+                rating: 0,
+                availability: []
+              })}
             >
-              <option value="">Todos los rubros</option>
-              {professionalCategories.map((category, index) => (
-                <option key={index} value={category}>{category}</option>
-              ))}
-            </select>
+              Limpiar todos los filtros
+            </button>
           </div>
-          
-          <div className="filter-section">
-            <h4>Ubicación</h4>
-            <input 
-              type="text" 
-              placeholder="Barrio o ciudad" 
-              value={filters.location}
-              onChange={(e) => handleFilterChange('location', e.target.value)}
-              className="filter-input"
-            />
-          </div>
-          
-          <div className="filter-section">
-            <h4>Calificación mínima</h4>
-            <div className="rating-filter">
-              {[1, 2, 3, 4, 5].map(star => (
-                <span 
-                  key={star}
-                  className={`star ${star <= filters.rating ? 'active' : ''}`}
-                  onClick={() => handleFilterChange('rating', star)}
-                >
-                  ★
-                </span>
-              ))}
-              {filters.rating > 0 && (
-                <button 
-                  className="clear-rating"
-                  onClick={() => handleFilterChange('rating', 0)}
-                >
-                  Limpiar
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div className="filter-section">
-            <h4>Días disponibles</h4>
-            <div className="availability-filter">
-              {daysOfWeek.map(day => (
-                <button
-                  key={day}
-                  className={`day-btn ${filters.availability.includes(day) ? 'active' : ''}`}
-                  onClick={() => toggleAvailabilityDay(day)}
-                >
-                  {day.substring(0, 3)}
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <button 
-            className="reset-filters"
-            onClick={() => setFilters({
-              category: '',
-              location: '',
-              rating: 0,
-              availability: []
-            })}
-          >
-            Limpiar todos los filtros
-          </button>
         </aside>
 
         {/* Professionals List */}
         <main className="professionals-list">
-          <div className="results-header">
-            <h2>{filteredProfessionals.length} profesionales encontrados</h2>
-            <div className="sort-options">
-              <span>Ordenar por:</span>
-              <select className="sort-select">
-                <option>Mejor calificados</option>
-                <option>Más cercanos</option>
-                <option>Menor precio</option>
-                <option>Mayor precio</option>
-              </select>
+          <div className="container">
+            <div className="results-header">
+              <h2>{filteredProfessionals.length} profesionales encontrados</h2>
+              <div className="sort-options">
+                <span>Ordenar por:</span>
+                <select className="sort-select">
+                  <option>Mejor calificados</option>
+                  <option>Más cercanos</option>
+                  <option>Menor precio</option>
+                  <option>Mayor precio</option>
+                </select>
+              </div>
             </div>
+            
+            {filteredProfessionals.length > 0 ? (
+              <div className="professionals-grid">
+                {filteredProfessionals.map(prof => (
+                  <div key={prof.id} className="professional-card">
+                    <div className="professional-photo">
+                      <img src={prof.photo} alt={prof.name} />
+                      <div className="rating-badge">
+                        ★ {prof.rating} <span>({prof.reviews})</span>
+                      </div>
+                    </div>
+                    <div className="professional-info">
+                      <h3>{prof.name}</h3>
+                      <div className="professional-category">
+                        <i className={`fas fa-${getCategoryIcon(prof.category)}`}></i>
+                        {prof.category}
+                      </div>
+                      <div className="professional-location">
+                        <i className="fas fa-map-marker-alt"></i>
+                        {prof.location}
+                      </div>
+                      <div className="professional-availability">
+                        <i className="fas fa-calendar-alt"></i>
+                        Disponible: {prof.availability.join(', ')}
+                      </div>
+                      <p className="professional-description">{prof.description}</p>
+                      <div className="professional-actions">
+                        <button className="contact-btn">
+                          <i className="fas fa-envelope"></i> Contactar
+                        </button>
+                        <button className="profile-btn">
+                          Ver perfil completo
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-results">
+                <i className="fas fa-search"></i>
+                <h3>No se encontraron profesionales con los filtros aplicados</h3>
+                <p>Intenta ajustar tus criterios de búsqueda</p>
+              </div>
+            )}
           </div>
-          
-          {filteredProfessionals.length > 0 ? (
-            <div className="professionals-grid">
-              {filteredProfessionals.map(prof => (
-                <div key={prof.id} className="professional-card">
-                  <div className="professional-photo">
-                    <img src={prof.photo} alt={prof.name} />
-                    <div className="rating-badge">
-                      ★ {prof.rating} <span>({prof.reviews})</span>
-                    </div>
-                  </div>
-                  <div className="professional-info">
-                    <h3>{prof.name}</h3>
-                    <div className="professional-category">
-                      <i className={`fas fa-${getCategoryIcon(prof.category)}`}></i>
-                      {prof.category}
-                    </div>
-                    <div className="professional-location">
-                      <i className="fas fa-map-marker-alt"></i>
-                      {prof.location}
-                    </div>
-                    <div className="professional-availability">
-                      <i className="fas fa-calendar-alt"></i>
-                      Disponible: {prof.availability.join(', ')}
-                    </div>
-                    <p className="professional-description">{prof.description}</p>
-                    <div className="professional-actions">
-                      <button className="contact-btn">
-                        <i className="fas fa-envelope"></i> Contactar
-                      </button>
-                      <button className="profile-btn">
-                        Ver perfil completo
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="no-results">
-              <i className="fas fa-search"></i>
-              <h3>No se encontraron profesionales con los filtros aplicados</h3>
-              <p>Intenta ajustar tus criterios de búsqueda</p>
-            </div>
-          )}
         </main>
       </div>
     </div>
   );
 };
-
 
 function getCategoryIcon(category) {
   const icons = {
