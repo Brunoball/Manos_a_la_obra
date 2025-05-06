@@ -314,7 +314,7 @@ const MainPage = () => {
   );
 };
 
-
+// Función auxiliar para obtenesdsdsd
 function getCategoryIcon(category) {
   const icons = {
     'Plomería': 'faucet',
