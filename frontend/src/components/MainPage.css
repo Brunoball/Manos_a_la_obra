@@ -4,9 +4,9 @@
   --primary-hover: #3a56d4;
   --secondary-color: #00c853;
   --dark-color: #2d3748;
-  --light-color: #f8fafc;
+  --light-color: #fcfaf8;
   --gray-color: #64748b;
-  --light-gray: #e2e8f0;
+  --light-gray: #ebf0e2;
   --white: #ffffff;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --radius: 8px;
@@ -71,17 +71,55 @@ ul {
   transform: translateY(-2px);
 }
 
+/* Main Header */
+.main-header {
+  background-color: var(--white);
+  box-shadow: var(--shadow);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.register-btn {
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
 /* Hero Section */
 .hero {
   background: linear-gradient(135deg, #4a6bff 0%, #3a56d4 100%);
   color: var(--white);
-  padding: 80px 0 60px;
+  padding: 60px 0 40px;
   text-align: center;
   margin-bottom: 40px;
 }
 
-.hero h1 {
-  font-size: 2.8rem;
+.hero h2 {
+  font-size: 2.5rem;
   margin-bottom: 20px;
   font-weight: 700;
   line-height: 1.2;
@@ -96,6 +134,7 @@ ul {
   margin-right: auto;
 }
 
+/* Resto del CSS permanece igual */
 .search-form {
   max-width: 800px;
   margin: 0 auto 30px;
@@ -490,8 +529,8 @@ ul {
 }
 
 @media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.2rem;
+  .hero h2 {
+    font-size: 2rem;
   }
 
   .hero p {

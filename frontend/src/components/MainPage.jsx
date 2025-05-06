@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
 
 const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
-  const [activeTab, setActiveTab] = useState('findProfessional');
+  const navigate = useNavigate();
   
   // Estado para los filtros
   const [filters, setFilters] = useState({
@@ -97,7 +98,11 @@ const MainPage = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     // Aplicar búsqueda
-    console.log('Buscando:', searchTerm, 'en', location);
+    setFilters(prev => ({
+      ...prev,
+      category: searchTerm,
+      location: location
+    }));
   };
 
   const handleFilterChange = (filterName, value) => {
@@ -120,11 +125,15 @@ const MainPage = () => {
     });
   };
 
+  const handleRegisterClick = () => {
+    navigate('/auth');
+  };
+
   // Filtrar profesionales según los filtros aplicados
   const filteredProfessionals = professionals.filter(prof => {
     return (
-      (filters.category === '' || prof.category === filters.category) &&
-      (filters.location === '' || prof.location.includes(filters.location)) &&
+      (filters.category === '' || prof.category.toLowerCase().includes(filters.category.toLowerCase())) &&
+      (filters.location === '' || prof.location.toLowerCase().includes(filters.location.toLowerCase())) &&
       (filters.rating === 0 || prof.rating >= filters.rating) &&
       (filters.availability.length === 0 || 
        filters.availability.some(day => prof.availability.includes(day)))
@@ -133,10 +142,22 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
-      {/* Hero Section */}
-      <header className="hero">
+      {/* Header con botón de registro */}
+      <header className="main-header">
         <div className="container">
-          <h1>Encuentra al profesional que necesitas</h1>
+          <div className="header-content">
+            <h1 className="logo">ServiProfesionales</h1>
+            <button className="register-btn" onClick={handleRegisterClick}>
+              Registrarse / Iniciar sesión
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="container">
+          <h2>Encuentra al profesional que necesitas</h2>
           <p>Contacta directamente con expertos locales para resolver tus problemas</p>
 
           <form className="search-form" onSubmit={handleSearch}>
@@ -165,8 +186,9 @@ const MainPage = () => {
             </div>
           </form>
         </div>
-      </header>
+      </section>
 
+      {/* Resto del código permanece igual */}
       {/* Main Content */}
       <div className="main-content-wrapper">
         {/* Filters Panel */}
