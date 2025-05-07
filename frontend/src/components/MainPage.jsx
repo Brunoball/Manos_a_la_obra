@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
 
 const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   
+  // Cargar datos del usuario al montar el componente
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
   // Estado para los filtros
   const [filters, setFilters] = useState({
     category: '',
@@ -97,7 +106,6 @@ const MainPage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Aplicar búsqueda
     setFilters(prev => ({
       ...prev,
       category: searchTerm,
@@ -125,8 +133,14 @@ const MainPage = () => {
     });
   };
 
-  const handleRegisterClick = () => {
+  const handleAuthClick = () => {
     navigate('/auth');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    // No redirigimos para que el usuario permanezca en la página
   };
 
   // Filtrar profesionales según los filtros aplicados
@@ -142,14 +156,27 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
-      {/* Header con botón de registro */}
+      {/* Header con información del usuario */}
       <header className="main-header">
         <div className="container">
           <div className="header-content">
             <h1 className="logo">ServiProfesionales</h1>
-            <button className="register-btn" onClick={handleRegisterClick}>
-              Registrarse / Iniciar sesión
-            </button>
+            {user ? (
+              <div className="user-profile">
+                <img src={user.picture} alt="Foto de perfil" className="profile-pic" />
+                <div className="user-info">
+                  <span className="welcome-message">Hola, {user.name.split(' ')[0]}</span>
+                  <span className="user-email">{user.email}</span>
+                </div>
+                <button className="logout-btn" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+              </div>
+            ) : (
+              <button className="register-btn" onClick={handleAuthClick}>
+                Registrarse / Iniciar sesión
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -188,7 +215,6 @@ const MainPage = () => {
         </div>
       </section>
 
-      {/* Resto del código permanece igual */}
       {/* Main Content */}
       <div className="main-content-wrapper">
         {/* Filters Panel */}
