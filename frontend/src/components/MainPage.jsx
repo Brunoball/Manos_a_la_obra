@@ -7,6 +7,7 @@ const MainPage = () => {
   const [location, setLocation] = useState('');
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [showMenu, setShowMenu] = useState(false);
   
   // Cargar datos del usuario al montar el componente
   useEffect(() => {
@@ -15,6 +16,20 @@ const MainPage = () => {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  // Cerrar el menú al hacer clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showMenu && !event.target.closest('.user-profile-container')) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMenu]);
 
   // Estado para los filtros
   const [filters, setFilters] = useState({
@@ -156,30 +171,65 @@ const MainPage = () => {
 
   return (
     <div className="main-page">
+
+
+      
       {/* Header con información del usuario */}
       <header className="main-header">
         <div className="container">
           <div className="header-content">
             <h1 className="logo">ServiProfesionales</h1>
             {user ? (
-              <div className="user-profile">
-                <img src={user.picture} alt="Foto de perfil" className="profile-pic" />
-                <div className="user-info">
-                  <span className="welcome-message">Hola, {user.name.split(' ')[0]}</span>
-                  <span className="user-email">{user.email}</span>
-                </div>
-                <button className="logout-btn" onClick={handleLogout}>
-                  Cerrar sesión
-                </button>
+          <div className="user-profile-container">
+            <div className="user-profile">
+              <img src={user.picture} alt="Foto de perfil" className="profile-pic" />
+              <div className="user-info">
+                <span className="welcome-message">Hola, {user.name.split(' ')[0]}</span>
+                <span className="user-email">{user.email}</span>
               </div>
-            ) : (
-              <button className="register-btn" onClick={handleAuthClick}>
-                Registrarse / Iniciar sesión
+              <button className="logout-btn" onClick={handleLogout}>
+                <i className="fas fa-sign-out-alt"></i> Salir
               </button>
-            )}
+              
+              <div className="user-profile-dropdown">
+                <div className="dropdown-header">
+                  <img src={user.picture} alt="User" />
+                  <div className="dropdown-header-info">
+                    <h4>{user.name}</h4>
+                    <p>{user.email}</p>
+                  </div>
+                </div>
+                <div className="dropdown-menu">
+                  <button className="dropdown-item" onClick={() => navigate('/profile')}>
+                    <i className="fas fa-user"></i> Mi perfil
+                  </button>
+                  <button className="dropdown-item" onClick={() => navigate('/settings')}>
+                    <i className="fas fa-cog"></i> Configuración
+                  </button>
+                  <button className="dropdown-item" onClick={() => navigate('/help')}>
+                    <i className="fas fa-question-circle"></i> Ayuda
+                  </button>
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    <i className="fas fa-sign-out-alt"></i> Cerrar sesión
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <button className="register-btn" onClick={handleAuthClick}>
+            <i className="fas fa-user-circle"></i> Registrarse / Iniciar sesión
+          </button>
+        )}
           </div>
         </div>
       </header>
+
+
+
+
+
 
       {/* Hero Section */}
       <section className="hero">
