@@ -149,7 +149,7 @@ const MainPage = () => {
   };
 
   const handleAuthClick = () => {
-    navigate('/auth');
+    navigate('/AuthPage');
   };
 
   const handleLogout = () => {

@@ -1,6 +1,7 @@
 <?php
 //php -c "C:\php\php.ini" -S localhost:3001
 //contraseñas base de datos: brunoball516
+
 //contraseñas base de datos: Gastex2233
 
 $servername = "localhost";  // Puede ser "127.0.0.1" también

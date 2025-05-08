@@ -51,23 +51,21 @@ const AuthPage = ({ onLogin }) => {
     return errors;
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    console.log('Usuario logueado con Google:', decoded);
-
-    const user = {
-      name: decoded.name,
-      email: decoded.email,
-      picture: decoded.picture,
-    };
-
-    localStorage.setItem('user', JSON.stringify(user));
-
-    if (onLogin) {
-      onLogin(user);
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const user = {
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+      };
+      
+      localStorage.setItem('user', JSON.stringify(user));
+      await onLogin(user); // Espera a que se complete el login
+      navigate('/', { replace: true }); // Redirige limpiamente
+    } catch (error) {
+      console.error('Error en el login:', error);
     }
-
-    navigate('/');
   };
 
   const handleGoogleError = () => {
