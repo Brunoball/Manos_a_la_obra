@@ -17,18 +17,26 @@ const AuthPage = ({ onLogin }) => {
     const validationErrors = validateForm();
     
     if (Object.keys(validationErrors).length === 0) {
-      // Aquí iría la lógica de autenticación normal
-      console.log('Login submitted:', { email, password, rememberMe });
-      // Simulamos un login exitoso
+      // Simulación de login exitoso
       const user = {
         name: 'Usuario Demo',
         email: email,
       };
       
+      // Guardar en localStorage si "Recordar contraseña" está marcado
+      if (rememberMe) {
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        sessionStorage.setItem('user', JSON.stringify(user));
+      }
+      
+      // Llamar a la función onLogin si existe
       if (onLogin) {
         onLogin(user);
       }
-      navigate('/');
+      
+      // Redirigir a la página principal
+      navigate('/', { replace: true });
     } else {
       setErrors(validationErrors);
     }
@@ -60,11 +68,18 @@ const AuthPage = ({ onLogin }) => {
         picture: decoded.picture,
       };
       
+      // Guardar en localStorage
       localStorage.setItem('user', JSON.stringify(user));
-      await onLogin(user); // Espera a que se complete el login
-      navigate('/', { replace: true }); // Redirige limpiamente
+      
+      // Llamar a la función onLogin si existe
+      if (onLogin) {
+        await onLogin(user);
+      }
+      
+      // Redirigir a la página principal
+      navigate('/', { replace: true });
     } catch (error) {
-      console.error('Error en el login:', error);
+      console.error('Error en el login con Google:', error);
     }
   };
 
