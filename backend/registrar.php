@@ -1,24 +1,24 @@
 <?php
-// Mostrar errores para debug
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-// Cabeceras necesarias para CORS y JSON
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-// Conexión a la base de datos
-include 'db.php';
+// Manejar solicitud OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
-// Leer y decodificar los datos recibidos desde React
+include 'db.php'; // Asegúrate de que este archivo contiene la conexión a la base de datos
+
+// Recibir datos JSON desde React
 $data = json_decode(file_get_contents("php://input"), true);
-
-// Validar y asignar datos
 $nombre = $data["nombre"] ?? '';
 $email = $data["email"] ?? '';
 
 if ($nombre && $email) {
+    // Preparar y ejecutar la inserción
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email) VALUES (?, ?)");
     $stmt->bind_param("ss", $nombre, $email);
 

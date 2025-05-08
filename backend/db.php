@@ -1,7 +1,11 @@
 <?php
+//php -c "C:\php\php.ini" -S localhost:3001
+//contraseñas base de datos: brunoball516
+//contraseñas base de datos: Gastex2233
+
 $servername = "localhost";  // Puede ser "127.0.0.1" también
 $username = "root";         // Tu usuario de MySQL
-$password = "brunoball516"; // Tu contraseña de MySQL (si tienes una)
+$password = "Gastex2233"; // Tu contraseña de MySQL (si tienes una)
 $dbname = "prueba_php_mysql";  // La base de datos que creaste
 
 // Crear la conexión
